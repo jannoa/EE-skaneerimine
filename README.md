@@ -11,13 +11,12 @@ Eesmärk on skaneerida kogu EE Internet ja leida lahendus, mis võimaldaks töö
 5. Esmane raport
 6. Lahenduse leidmine andmete visualiseerimiseks
 7. Logstash <- Elasticsearch -> Kibana lahendus
-8. Kibanaga on võimalik andmeid pärida Elasticsearch-ist ning luua visuaalseid raporteid ja analüüse
 
 ### 1. Shodan.io
 
-Idee oli võtta Shodan.io kasutusele kuna tegemist kõige populaarsema skaneeringu tööriistaga, mis leiab laialdast kasutust ja mille tulemustele tihti põhinetakse. Lisaks kui luua tööriist , mis kasutab just Shodani väljundit ehk on ka reaalselt teisi huvilisi, kes tahaksid loodud lahendust kasutada.
+Idee oli võtta Shodan.io kasutusele kuna tegemist kõige populaarsema skaneeringu tööriistaga, mis leiab laialdast kasutust ja mille tulemustele tihti põhinetakse. Lisaks kui luua tööriist, mis kasutab just Shodani väljundit ehk on ka reaalselt teisi huvilisi, kes tahaksid loodud lahendust kasutada.
 
-Hetkel on murekohtadeks loomulikult see, et saada Shodanist JSON väljundit, peab maksma ja saada kogu Eesti skaneeringut, läheb see 42 eurot. Kas ka mõistlik - see on vaieldav ja tasuks võibolla mõelda teiste teenuste peale nagu [Censys](https://censys.io/data) või [Rapid7 Sonar](https://github.com/rapid7/sonar/wiki). Organisatsioonidel on ka võimalus teha leping, millega tekitatakse reaalajas andmevoog.
+Hetkel on murekohtadeks loomulikult see, et saada Shodanist JSON väljundit, peab maksma ja saada kogu Eesti skaneeringut, läheb see 42 eurot. Kas ka mõistlik - see on vaieldav ja tasuks võibolla mõelda teiste teenuste peale nagu [Censys](https://censys.io/data) või [Rapid7 Sonar](https://github.com/rapid7/sonar/wiki). Organisatsioonidel on ka võimalus sõlmida Shodaniga leping, millega tekitatakse reaalajas andmevoog.
 
 ### 2. JSON kujul skaneeringu tulemus
 
@@ -29,7 +28,7 @@ Algselt vaatasin sellele andmehulgale otsa eesmärgiga, et kuidas sealt välja v
 
 ### 4. Programmeerimiskeele jq kasutamine
 
-Enne kui aru sain kui raske on tegelikult leida JSONist meid huvitavat sattusin ühe Shodani spetsiifilise skaneeringu tulemuse peale, mis on nüüdseks küllaltki petlikuks muutunud. Ehk kui tuvastatakse IP tagant mõne kriitilisema CVE-ga turvanõrkus, siis kirjutatakse see sellele skaneeringu tulemusele külge.
+Enne kui aru sain kui raske on tegelikult leida JSONist meid huvitavat infot sattusin ühe Shodani spetsiifilise skaneeringu tulemuse peale, mis on nüüdseks küllaltki petlikuks muutunud. Ehk kui tuvastatakse IP tagant mõne kriitilisema CVE-ga turvanõrkus, siis kirjutatakse see sellele skaneeringu tulemusele külge.
 
 Nagu ka *sample.json*-is näha, on lisatud juurde *CVE-2014-0160*, mis siis vastab Heartbleed turvanõrkusele
 ```
@@ -54,13 +53,13 @@ Väljatoodud *jq* päring on tehtud eeldusel, et teame, et andmehulgas kuskil on
 
 Mida aga teha siis kui me ei tea, kas väärtus mida otsime on kuskil andmehulgas või mitte? Eks siis anname kasutajale teada, et ei leitud tulemusi?
 
-Aga siis kui see väärtus, mida otsime on andmehulgas olemas aga mitte küll täpselt sellisel kujul, mida me otsime? Eks peab arendama *jq* päringu, mis on võimeline *regex*-i abiga erinevaid võimalusi tagastama? Olen üritanud sellist lahendust luua aga siiani pole õnnestunud... 
+Aga siis kui see väärtus, mida otsime on andmehulgas olemas aga mitte küll täpselt sellisel kujul, mida me otsime? Eks peab arendama *jq* päringu, mis on võimeline *regex*-i abiga erinevaid võimalusi tagastama? Olen üritanud sellist lahendust luua aga siiani pole õnnestunud... kas ka mõtekas?
 
-Ning kuidas sa üldse tead, mida sa otsid? Tihti turvanõrkustega seadmeid leiab ainult üles nende püsivara või väga spetsiifilise tarkvara versiooni järgi või lausa mingi string veebibanneris. Aga teada millises JSON *key*-s  just see väärtus on mida sa otsid  - see on jällegi peaaegu võimatu kui just ei ole seda oma silmaga näinud, nagu ma sattusin peale:
+Ning kuidas sa üldse tead, mida sa otsid? Tihti turvanõrkustega seadmeid leiab ainult üles nende püsivara või väga spetsiifilise tarkvara versiooni järgi või lausa mingi string veebibanneris. Aga teada millises JSON *key*-s  just see väärtus on mida sa otsid  - see on jällegi peaaegu võimatu kui just ei ole seda oma silmaga näinud, nagu ma sattusin peale siis Heartbleedile:
 ```
 "vulns": ["!CVE-2014-0160"],
 ```
-Mõtlesin, et äkki siis lahendus selline, et kõigepealt kasutad Shodan.io enda otsingumootorit, et teha kindlaks kas Shodani skaneeringud on leidnud selliseid seadmeid või teenuseid üldse. Aga ka selleks on vaja algset arusaama mida otsid ehk kas oled leidnud CVE-st või mõnest muus turvanõrkuse teavitusest piisavalt infot, et hakkata otsinguid tegema. Kui lõpuks leiad õige väärtuse, millega saad Shodan.io-st tulemused, siis saab hakata neid vaatama, et kas on viiteid, kuidas see väärtus võiks JSON-is välja näha ja millises *key* väärtuses olla võiks. Selline tööprotsess ei tundu väga mõistlik ja kui efektiivne see oleks, ei oska öelda - hetkel ei ole omale uut Shodani dataseti ostnud ja ei saa võrrelda oma *jq* tulemusi siis Shodan-i otsingumootori omaga.
+Mõtlesin, et äkki siis lahendus selline, et kõigepealt kasutad Shodan.io enda otsingumootorit, et teha kindlaks kas Shodani skaneeringud on leidnud selliseid seadmeid või teenuseid üldse. Aga ka selleks on vaja algset arusaama mida otsid ehk kas oled leidnud CVE-st või mõnest muust turvanõrkuse teavitusest piisavalt infot, et hakkata otsinguid tegema. Kui lõpuks leiad õige väärtuse, millega saad Shodan.io-st tulemused, siis saab hakata neid vaatama, et kas on viiteid, kuidas see väärtus võiks JSON-is välja näha ja millises *key* väärtuses olla võiks. Selline tööprotsess ei tundu väga mõistlik ja kui efektiivne see oleks, ei oska öelda - hetkel ei ole omale uut Shodani dataseti ostnud ja ei saa võrrelda oma *jq* tulemusi siis Shodan-i otsingumootori omaga.
 
 Hetkel siis kõige suurem **murekoht** ongi - leida milline tööprotsess oleks kõige efektiivsem ja reaalselt ka töötaks ja kas see on võimalik üldse Shodaniga töötades?
 
@@ -96,9 +95,9 @@ Näeme ka seda, et saame kasutada Shodani enda timestampi, et luua ajaline ülev
 
 Edasine tegevus olekski juba andmete visualiseerimine, mis nõuab erinevate Eleastisearch-i bucketite kasutamist. ![kibana_visualize](https://user-images.githubusercontent.com/34548027/34017122-0e6c6cb2-e12d-11e7-8fd4-f63422b92d05.png)
 
+## Hetke seisu kokkuvõte
 
-
-
+Esmane lahendus olemas aga tuleks kriitiliselt vaadata, kas Shodan mõistlik ja kuidas turvanõrkustega seadmete ja teenuste leidmine JSON datast mõistlik ja efektiivne oleks (tööprotsessi loomine). 
 
 
 
