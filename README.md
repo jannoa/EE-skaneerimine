@@ -11,9 +11,7 @@ Eesmärk on skaneerida kogu EE Internet ja leida lahendus, mis võimaldaks töö
 5. Esmane raport
 6. Lahenduse leidmine andmete visualiseerimiseks
 7. Logstash <- Elasticsearch -> Kibana lahendus
-8. Logstash struktueerib .csv andmed sellisele kujule, et on töödeldavad Elastisearch-i poolt
-9. Elasticsearch võimaldab andmeid hoiustada, arhiveerida ja töödelda
-10. Kibanaga on võimalik andmeid pärida Elasticsearch-ist ning luua visuaalseid raporteid ja analüüse
+8. Kibanaga on võimalik andmeid pärida Elasticsearch-ist ning luua visuaalseid raporteid ja analüüse
 
 ### 1. Shodan.io
 
@@ -86,9 +84,20 @@ Seega hakkasin otsima monitooringu/analüüsi tööriistu nagu Kibana ja Grafana
 
 Kibanast üksinda loomulikult ei piisanud. Kibana on väga hea tööriist erinevate graafikute joonistamiseks ja andmete analüüsimiseks aga oma info saab ta Elasticsearch-ist.
 
-Selleks aga, et meie poolt töödeldud andmed jõuaksid Elastisearch-i peab kasutama Logstash mootorit, mis struktureerib *tulemused.csv* failis Elasticsearch-i jaoks.
+Esialgselt Elasticsearch-i pärast muretsema ei pea, kui ainult, et teenus oleks paigaldatud ja jookseks.
 
-Tänu sellele 
+Selleks aga, et meie poolt töödeldud andmed jõuaksid Elastisearch-i peab kasutama Logstash mootorit, mis struktureerib *tulemused.csv* failis Elasticsearch-i jaoks. Selleks kasutame järgnevat Logstashi *.config* [faili](https://github.com/jannoa/EE-skaneerimine/blob/master/logstash_shodan.config)
+
+Järgmisena etapina saab liikuda juba Kibanale. Kui teenus edukalt paigaldatud, saame hakata kasutama Elasticsearchi poolt indekseeritud andmeid.
+
+Mida näeme ka Kibanas ![kibana_indeks](https://user-images.githubusercontent.com/34548027/34016455-9b1eb8b6-e12a-11e7-8ac4-909b7080d24e.png)
+
+Näeme ka seda, et saame kasutada Shodani enda timestampi, et luua ajaline ülevaade, mille kirjutasime *tulemused.csv* faili TIME veergu, ilma, et oleks vaja teha muid muudatusi. ![kibana_discover](https://user-images.githubusercontent.com/34548027/34016850-14dd1e4e-e12c-11e7-82eb-951eec001bf5.png)
+
+Edasine tegevus olekski juba andmete visualiseerimine, mis nõuab erinevate Eleastisearch-i bucketite kasutamist. ![kibana_visualize](https://user-images.githubusercontent.com/34548027/34017122-0e6c6cb2-e12d-11e7-8fd4-f63422b92d05.png)
+
+
+
 
 
 
