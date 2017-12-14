@@ -1,6 +1,22 @@
-# Project Title
+# EE-skaneerimine ja analüüsimine
 
-One Paragraph of project description goes here
+Eesmärk on skaneerida kogu EE Internet ja leida lahendus, mis võimaldaks töödelda saadud skaneeringu tulemusi sellisele kujule, et neid andmeid oleks võimalik hoiustada ajalooliselt, ja et tekiks visuaalne arusaam turvanõrkustega seadmetest ja veebiteenustest EE Internetis.
+
+## Hetke lahendus
+
+1. Shodan.io scan EE Internetist
+2. JSON kujul skaneeringu tulemus - raskesti loetav, suuremahuline andmehulk
+3. Saadud JSON analüüsimine - kuidas andmed struktureeritud on ja tööprotsessi loomine, et leiaks andmetest meid huvitavad faktid
+4. Programmeerimiskeele jq kasutamine, et luua päringud, mis võimaldavad töötlemata JSONist kättesaada meid huvitavad andmed
+5. jq-ga päritud andmed on sellisel kujul, et saab luua esialgseid raporteid .csv (comma separated values) kujul
+6. Leida lahendus, mis võimaldaks .csv kujul salvestatud andmed salvestada ajalooliselt ja luua visuaalseid raporteid
+7. Logstash <- Elasticsearch -> Kibana lahendus
+8. Logstash struktueerib .csv andmed sellisele kujule, et on töödeldavad Elastisearch-i poolt
+9. Elasticsearch võimaldab andmeid hoiustada, arhiveerida ja töödelda
+10. Kibanaga on võimalik andmeid pärida Elasticsearch-ist ning luua visuaalseid raporteid ja analüüse
+
+### 1. Shodan.io
+
 
 ## Getting Started
 
